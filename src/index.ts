@@ -15,6 +15,13 @@ async function init() {
 
     app.use(bodyParser.json())
 
+    app.get("/", (req, res) => {
+      res.status(200).json({
+        message: "Server is Running!!!!",
+        data: "Hello World!",
+      })
+    })
+
     app.use("/api", router)
 
     app.listen(PORT, () => {
