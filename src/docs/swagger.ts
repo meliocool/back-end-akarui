@@ -28,6 +28,16 @@ const doc = {
         identifier: "CotoCola",
         password: "kotone123",
       },
+      RegisterRequest: {
+        fullName: "Melio Test",
+        username: "Melio2025",
+        email: "meliotest2025@yopmail.com",
+        password: "melio123",
+        confirmPassword: "melio123",
+      },
+      ActivationRequest: {
+        code: "tonecantik",
+      },
     },
   },
 }
