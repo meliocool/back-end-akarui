@@ -1,4 +1,4 @@
-import swaggerAutogen from "swagger-autogen"
+import swaggerAutogen from "swagger-autogen";
 
 const doc = {
   info: {
@@ -40,9 +40,9 @@ const doc = {
       },
     },
   },
-}
+};
 
-const outputFile = "./swagger_output.json"
-const endpointsFile = ["../routes/api.ts"]
+const outputFile = "./swagger_output.json";
+const endpointsFile = ["../routes/api.ts"];
 
-swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFile, doc)
+swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFile, doc);

@@ -1,39 +1,37 @@
-import express from "express"
-import bodyParser from "body-parser"
-import router from "./routes/api"
-import db from "./utils/database"
-import docs from "./docs/route"
-import cors from "cors"
+import express from "express";
+import bodyParser from "body-parser";
+import router from "./routes/api";
+import db from "./utils/database";
+import docs from "./docs/route";
+import cors from "cors";
+import response from "./utils/response";
 
 async function init() {
   try {
-    const PORT = 3000
+    const PORT = 3000;
     // Connect db dulu baru yg lain
-    const result = await db()
-    console.log(`Database status: ${result}`)
+    const result = await db();
+    console.log(`Database status: ${result}`);
 
-    const app = express()
+    const app = express();
 
-    app.use(cors())
+    app.use(cors());
 
-    app.use(bodyParser.json())
+    app.use(bodyParser.json());
 
     app.get("/", (req, res) => {
-      res.status(200).json({
-        message: "Server is Running!!!!",
-        data: "Hello World!",
-      })
-    })
+      response.success(res, "Hello World!", "Server is Running!!!!");
+    });
 
-    app.use("/api", router)
-    docs(app)
+    app.use("/api", router);
+    docs(app);
 
     app.listen(PORT, () => {
-      console.log(`Server is up and running on http://localhost:${PORT}`)
-    })
+      console.log(`Server is up and running on http://localhost:${PORT}`);
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
 
-init()
+init();
