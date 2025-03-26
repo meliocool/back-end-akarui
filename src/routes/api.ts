@@ -5,6 +5,7 @@ import aclMiddleware from "../middleware/acl.middleware";
 import { ROLES } from "../utils/constant";
 import mediaMiddleware from "../middleware/media.middleware";
 import mediaController from "../controllers/media.controller";
+import categoryController from "../controllers/category.controller";
 
 const router = express.Router();
 
@@ -24,6 +25,25 @@ router.get(
       data: "Success!",
     });
   }
+);
+
+// -- CRUD CATEGORY -- //
+router.post(
+  "/category",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  categoryController.create
+);
+router.get("/category", categoryController.findAll);
+router.get("/category/:id", categoryController.findOne);
+router.put(
+  "/category/:id",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  categoryController.update
+);
+router.delete(
+  "/category/:id",
+  [authMiddleware, aclMiddleware([ROLES.ADMIN])],
+  categoryController.remove
 );
 
 // -- MEDIA STUFF -- //
