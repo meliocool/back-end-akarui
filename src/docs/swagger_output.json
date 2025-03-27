@@ -129,6 +129,9 @@
     },
     "/test-acl": {
       "get": {
+        "tags": [
+          "Testing"
+        ],
         "description": "",
         "parameters": [
           {

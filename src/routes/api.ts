@@ -27,6 +27,9 @@ router.get(
       data: "Success!",
     });
   }
+  /*
+  #swagger.tags = ['Testing']
+  */
 );
 
 // -- CRUD CATEGORY -- //
