@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 import {
   EMAIL_SMTP_SECURE,
   EMAIL_SMTP_PASS,
@@ -6,9 +6,9 @@ import {
   EMAIL_SMTP_PORT,
   EMAIL_SMTP_HOST,
   EMAIL_SMTP_SERVICE_NAME,
-} from "../env"
-import ejs from "ejs"
-import path from "path"
+} from "../env";
+import ejs from "ejs";
+import path from "path";
 
 // Konfigurasi nodemailer
 const transporter = nodemailer.createTransport({
@@ -21,22 +21,22 @@ const transporter = nodemailer.createTransport({
     pass: EMAIL_SMTP_PASS,
   },
   requireTLS: true,
-})
+});
 
 export interface ISendMail {
-  from: string
-  to: string
-  subject: string
-  html: string
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
 }
 
 // Function to send email
 export const sendMail = async ({ ...mailParams }: ISendMail) => {
   const result = await transporter.sendMail({
     ...mailParams,
-  })
-  return result
-}
+  });
+  return result;
+};
 
 // Render ejs file
 export const renderMailHtml = async (
@@ -46,6 +46,6 @@ export const renderMailHtml = async (
   const content = await ejs.renderFile(
     path.join(__dirname, `templates/${template}`),
     data
-  )
-  return content as string
-}
+  );
+  return content as string; // return the content as a string
+};
