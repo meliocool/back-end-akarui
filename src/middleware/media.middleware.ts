@@ -7,9 +7,11 @@ const upload = multer({
 });
 
 export default {
+  // To upload single files
   single(fieldName: string) {
     return upload.single(fieldName);
   },
+  // To upload multiple files at the same time
   multiple(fieldName: string) {
     return upload.array(fieldName);
   },
