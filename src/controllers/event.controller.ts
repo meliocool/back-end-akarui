@@ -2,7 +2,7 @@ import { Response } from "express";
 import { IPaginationQuery, IReqUser } from "../utils/interfaces";
 import response from "../utils/response";
 import EventModel, { eventDAO, TEvent } from "../models/event.model";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
 
 export default {
   async create(req: IReqUser, res: Response) {
@@ -55,6 +55,9 @@ export default {
   async findOne(req: IReqUser, res: Response) {
     try {
       const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "Not found!");
+      }
       const result = await EventModel.findById(id);
       if (!result) {
         return response.notFound(res, "Not found!");
@@ -67,6 +70,9 @@ export default {
   async update(req: IReqUser, res: Response) {
     try {
       const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "Not found!");
+      }
       const result = await EventModel.findByIdAndUpdate(id, req.body, {
         new: true,
       });
@@ -78,6 +84,9 @@ export default {
   async remove(req: IReqUser, res: Response) {
     try {
       const { id } = req.params;
+      if (!isValidObjectId(id)) {
+        return response.notFound(res, "Not found!");
+      }
       const result = await EventModel.findByIdAndDelete(id, {
         new: true,
       });
