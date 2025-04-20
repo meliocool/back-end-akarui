@@ -1,4 +1,4 @@
-import mongoose, { mongo, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import * as Yup from "yup";
 import { EVENT_MODEL_NAME } from "./event.model";
 
