@@ -62,6 +62,18 @@ const doc = {
       RemoveMediaRequest: {
         fileUrl: "",
       },
+      CreateBannerRequest: {
+        title: "Banner 1",
+        image: "YesImage.jpg",
+        isShow: true,
+      },
+      CreateTicketRequest: {
+        price: 3000000,
+        name: "Reguler",
+        events: "67e9037660ec0182768e8d55",
+        description: "Reguler description",
+        quantity: 100,
+      },
     },
   },
 };
