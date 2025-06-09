@@ -21,7 +21,7 @@ export default {
       payload,
       {
         headers: {
-          "Content-Type": "appliation/json",
+          "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: `Basic ${Buffer.from(
             `${MIDTRANS_SERVER_KEY}:`
