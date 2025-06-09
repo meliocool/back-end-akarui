@@ -10,6 +10,7 @@ import regionController from "../controllers/region.controller";
 import eventController from "../controllers/event.controller";
 import ticketController from "../controllers/ticket.controller";
 import bannerController from "../controllers/banner.controller";
+import orderController from "../controllers/order.controller";
 
 const router = express.Router();
 
@@ -441,6 +442,25 @@ router.delete(
     required: true,
     schema: {
       $ref: "#/components/schemas/RemoveMediaRequest"
+    }
+  }
+  */
+);
+
+// -- ORDER -- //
+router.post(
+  "/orders",
+  [authMiddleware, aclMiddleware([ROLES.MEMBER])],
+  orderController.create
+  /*
+  #swagger.tags = ['Orders']
+  #swagger.security = [{
+    "bearerAuth": {}
+  }]
+  #swagger.requestBody = {
+    required: true,
+    schema: {
+      $ref: "#/components/schemas/CreateOrderRequest"
     }
   }
   */
