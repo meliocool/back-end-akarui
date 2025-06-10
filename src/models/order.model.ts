@@ -105,16 +105,16 @@ const OrderSchema = new Schema<Order>(
 ).index({ orderId: "text" });
 
 // Middleware
-OrderSchema.pre("save", async function () {
-  const order = this;
-  order.orderId = getId();
-  order.payment = await payment.createLink({
-    transaction_details: {
-      gross_amount: order.total,
-      order_id: order.orderId,
-    },
-  });
-});
+// OrderSchema.pre("save", async function () {
+//   const order = this;
+//   order.orderId = getId();
+//   order.payment = await payment.createLink({
+//     transaction_details: {
+//       gross_amount: order.total,
+//       order_id: order.orderId,
+//     },
+//   });
+// });
 
 const OrderModel = mongoose.model(ORDER_MODEL_NAME, OrderSchema);
 

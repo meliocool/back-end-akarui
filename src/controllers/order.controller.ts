@@ -10,6 +10,7 @@ import OrderModel, {
 import TicketModel from "../models/ticket.model";
 import { FilterQuery } from "mongoose";
 import { getId } from "../utils/id";
+import payment from "../utils/payment";
 
 export default {
   async create(req: IReqUser, res: Response) {
@@ -33,13 +34,44 @@ export default {
       }
 
       const total: number = +ticket?.price * +payload.quantity;
-      Object.assign(payload, {
+      const orderId = getId();
+
+      // Object.assign(payload, {
+      //   ...payload,
+      //   total,
+      // });
+      // const result = await OrderModel.create(payload);
+
+      const midtransPayload = {
+        transaction_details: {
+          order_id: orderId,
+          gross_amount: total,
+        },
+        // customer_details: {
+        //   first_name: req.user?.fullName,
+        //   email: req.user?.email,
+        // }
+      };
+
+      const midtransResponse = await payment.createLink(midtransPayload);
+
+      const finalOrderPayload = {
         ...payload,
+        orderId,
         total,
-      });
-      const result = await OrderModel.create(payload);
-      response.success(res, result, "Order Successfully Created!");
+        payment: midtransResponse, // Langsung sertakan info dari Midtrans
+        createdBy: userId,
+      };
+
+      await OrderModel.create(finalOrderPayload);
+
+      return response.success(
+        res,
+        midtransResponse,
+        "Order Successfully Created!"
+      );
     } catch (error) {
+      console.error("CREATE_ORDER_ERROR:", error);
       response.error(res, error, "Failed to Create an Order!");
     }
   },
