@@ -1,11 +1,13 @@
 import axios from "axios";
 import { MIDTRANS_SERVER_KEY, MIDTRANS_TRANSACTION_URL } from "./env";
-import { StringLiteral } from "typescript";
 
 export interface Payment {
   transaction_details: {
     order_id: string;
     gross_amount: number;
+  };
+  callbacks?: {
+    finish: string;
   };
 }
 

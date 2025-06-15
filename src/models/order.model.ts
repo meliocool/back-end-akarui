@@ -113,6 +113,9 @@ OrderSchema.pre("save", async function () {
       gross_amount: order.total,
       order_id: order.orderId,
     },
+    callbacks: {
+      finish: "https://front-end-akarui.vercel.app/payment/success",
+    },
   });
 });
 

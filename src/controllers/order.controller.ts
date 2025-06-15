@@ -33,7 +33,6 @@ export default {
       }
 
       const total: number = +ticket?.price * +payload.quantity;
-      const orderId = getId();
 
       Object.assign(payload, {
         ...payload,
