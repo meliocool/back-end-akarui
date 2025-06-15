@@ -3,18 +3,57 @@ import { encrypt } from "../utils/encryption";
 import { renderMailHtml, sendMail } from "../utils/mail/mail";
 import { CLIENT_HOST, EMAIL_SMTP_USER } from "../utils/env";
 import { ROLES } from "../utils/constant";
+import * as Yup from "yup";
+
+const validatePassword = Yup.string()
+  .required()
+  .min(6, "Password must be at least 6 characters")
+  .test(
+    "at-least-one-uppercase-letter",
+    "Contains at least one uppercase character",
+    (value) => {
+      if (!value) return false;
+      const regex = /^(?=.*[A-Z])/;
+      return regex.test(value);
+    }
+  )
+  .test("at-least-one-number", "Contains at least one number", (value) => {
+    if (!value) return false;
+    const regex = /^(?=.*\d)/;
+    return regex.test(value);
+  });
+const validateConfirmPassword = Yup.string()
+  .required()
+  .oneOf([Yup.ref("password"), ""], "Password not Matched!");
 
 export const USER_MODEL_NAME = "User";
 
-export interface User {
-  fullName: string;
-  username: string;
-  email: string;
-  password: string;
-  role: string;
-  profilePicture: string;
+export const userLoginDTO = Yup.object({
+  identifier: Yup.string().required(),
+  password: validatePassword,
+});
+
+export const userUpdatePasswordDTO = Yup.object({
+  oldPassword: validatePassword,
+  password: validatePassword,
+  confirmPassword: validateConfirmPassword,
+});
+
+export const userDTO = Yup.object({
+  fullName: Yup.string().required(),
+  username: Yup.string().required(),
+  email: Yup.string().required(),
+  password: validatePassword,
+  confirmPassword: validateConfirmPassword,
+});
+
+export type TypeUser = Yup.InferType<typeof userDTO>;
+
+export interface User extends Omit<TypeUser, "confirmPassword"> {
   isActive: boolean;
   activationCode: string;
+  role: string;
+  profilePicture: string;
   createdAt?: string;
 }
 

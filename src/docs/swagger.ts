@@ -38,6 +38,15 @@ const doc = {
       ActivationRequest: {
         code: "tonecantik",
       },
+      UpdateProfileRequest: {
+        fullName: "",
+        profilePicture: "",
+      },
+      UpdatePasswordRequest: {
+        oldPassword: "",
+        password: "",
+        confirmPassword: "",
+      },
       CreateCategoryRequest: {
         name: "",
         description: "",
