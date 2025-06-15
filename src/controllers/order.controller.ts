@@ -47,10 +47,6 @@ export default {
           order_id: orderId,
           gross_amount: total,
         },
-        // customer_details: {
-        //   first_name: req.user?.fullName,
-        //   email: req.user?.email,
-        // }
       };
 
       const midtransResponse = await payment.createLink(midtransPayload);
@@ -126,7 +122,49 @@ export default {
       response.error(res, error, "Failed to Find This Order!");
     }
   },
-  async findAllByMember(req: IReqUser, res: Response) {},
+
+  async findAllByMember(req: IReqUser, res: Response) {
+    try {
+      const userId = req.user?.id;
+      const buildQuery = (filter: any) => {
+        let query: FilterQuery<TypeOrder> = {
+          createdBy: userId,
+        };
+
+        if (filter.search) query.$text = { $search: filter.search };
+
+        return query;
+      };
+
+      const { limit = 10, page = 1, search } = req.query;
+
+      const query = buildQuery({
+        search,
+      });
+
+      const result = await OrderModel.find(query)
+        .limit(+limit)
+        .skip((+page - 1) * +limit)
+        .sort({ createdAt: -1 })
+        .lean()
+        .exec();
+
+      const count = await OrderModel.countDocuments(query);
+
+      response.pagination(
+        res,
+        result,
+        {
+          current: +page,
+          total: count,
+          totalPages: Math.ceil(count / +limit),
+        },
+        "success find all orders"
+      );
+    } catch (error) {
+      response.error(res, error, "Failed to find all Orders!");
+    }
+  },
 
   async completed(req: IReqUser, res: Response) {
     try {
@@ -185,16 +223,93 @@ export default {
       response.error(res, error, "Order is not Completed!");
     }
   },
+
   async pending(req: IReqUser, res: Response) {
     try {
+      const { orderId } = req.params;
+      const order = await OrderModel.findOne({
+        orderId,
+      });
+      if (!order) return response.notFound(res, "Order Not Found!");
+      if (order.status === OrderStatus.PENDING)
+        return response.success(
+          res,
+          order,
+          "Order Is Already In Pending Status!"
+        );
+      if (order.status === OrderStatus.COMPLETED)
+        return response.error(res, null, "This Order Is Already Completed!");
+      if (order.status === OrderStatus.CANCELLED)
+        return response.error(res, null, "This Order Is Already Cancelled!");
+
+      const result = await OrderModel.findOneAndUpdate(
+        {
+          orderId: orderId,
+        },
+        {
+          $set: {
+            status: OrderStatus.PENDING,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+      response.success(res, result, "Order Successfully In Pending Status!");
     } catch (error) {
       response.error(res, error, "Order failed to Pending!");
     }
   },
+
   async cancelled(req: IReqUser, res: Response) {
     try {
+      const { orderId } = req.params;
+      const order = await OrderModel.findOne({
+        orderId,
+      });
+      if (!order) return response.notFound(res, "Order Not Found!");
+      if (order.status === OrderStatus.COMPLETED)
+        return response.error(res, null, "Cannot cancel a completed order!");
+      if (order.status === OrderStatus.CANCELLED)
+        return response.success(
+          res,
+          order,
+          "This order has already been cancelled."
+        );
+
+      const result = await OrderModel.findOneAndUpdate(
+        {
+          orderId: orderId,
+        },
+        {
+          $set: {
+            status: OrderStatus.CANCELLED,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+      response.success(res, result, "Order Successfully Cancelled!");
     } catch (error) {
       response.error(res, error, "Failed to cancel Order!");
+    }
+  },
+  async remove(req: IReqUser, res: Response) {
+    try {
+      const { orderId } = req.params;
+      const result = await OrderModel.findOneAndDelete(
+        {
+          orderId,
+        },
+        {
+          new: true,
+        }
+      );
+      if (!result) return response.notFound(res, "Order Not Found!");
+      response.success(res, result, "Order removed successfully!");
+    } catch (error) {
+      response.error(res, error, "Failed to remove an Order!");
     }
   },
 };
