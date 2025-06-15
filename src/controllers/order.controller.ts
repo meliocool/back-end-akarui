@@ -264,8 +264,8 @@ export default {
         orderId,
       });
       if (!order) return response.notFound(res, "Order Not Found!");
-      if (order.status === OrderStatus.COMPLETED)
-        return response.error(res, null, "Cannot cancel a completed order!");
+      // if (order.status === OrderStatus.COMPLETED)
+      //   return response.error(res, null, "Cannot cancel a completed order!");
       if (order.status === OrderStatus.CANCELLED)
         return response.success(
           res,

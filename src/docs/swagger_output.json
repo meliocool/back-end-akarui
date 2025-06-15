@@ -1628,8 +1628,8 @@
             "type": "object",
             "properties": {
               "region": {
-                "type": "string",
-                "example": "regionId"
+                "type": "number",
+                "example": 3273
               },
               "coordinates": {
                 "type": "array",
@@ -1722,6 +1722,26 @@
         },
         "xml": {
           "name": "CreateTicketRequest"
+        }
+      },
+      "CreateOrderRequest": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "type": "string",
+            "example": "Event Object Id"
+          },
+          "ticket": {
+            "type": "string",
+            "example": "Ticket Object Id"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "xml": {
+          "name": "CreateOrderRequest"
         }
       }
     }
