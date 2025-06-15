@@ -36,36 +36,32 @@ export default {
       const total: number = +ticket?.price * +payload.quantity;
       const orderId = getId();
 
-      // Object.assign(payload, {
-      //   ...payload,
-      //   total,
-      // });
-      // const result = await OrderModel.create(payload);
-
-      const midtransPayload = {
-        transaction_details: {
-          order_id: orderId,
-          gross_amount: total,
-        },
-      };
-
-      const midtransResponse = await payment.createLink(midtransPayload);
-
-      const finalOrderPayload = {
+      Object.assign(payload, {
         ...payload,
-        orderId,
         total,
-        payment: midtransResponse, // Langsung sertakan info dari Midtrans
-        createdBy: userId,
-      };
+      });
+      const result = await OrderModel.create(payload);
 
-      await OrderModel.create(finalOrderPayload);
+      // const midtransPayload = {
+      //   transaction_details: {
+      //     order_id: orderId,
+      //     gross_amount: total,
+      //   },
+      // };
 
-      return response.success(
-        res,
-        midtransResponse,
-        "Order Successfully Created!"
-      );
+      // const midtransResponse = await payment.createLink(midtransPayload);
+
+      // const finalOrderPayload = {
+      //   ...payload,
+      //   orderId,
+      //   total,
+      //   payment: midtransResponse, // Langsung sertakan info dari Midtrans
+      //   createdBy: userId,
+      // };
+
+      // await OrderModel.create(finalOrderPayload);
+
+      return response.success(res, result, "Order Successfully Created!");
     } catch (error) {
       console.error("CREATE_ORDER_ERROR:", error);
       response.error(res, error, "Failed to Create an Order!");
@@ -227,8 +223,10 @@ export default {
   async pending(req: IReqUser, res: Response) {
     try {
       const { orderId } = req.params;
+      const userId = req.user?.id;
       const order = await OrderModel.findOne({
         orderId,
+        createdBy: userId,
       });
       if (!order) return response.notFound(res, "Order Not Found!");
       if (order.status === OrderStatus.PENDING)
@@ -245,6 +243,7 @@ export default {
       const result = await OrderModel.findOneAndUpdate(
         {
           orderId: orderId,
+          createdBy: userId,
         },
         {
           $set: {
@@ -264,8 +263,10 @@ export default {
   async cancelled(req: IReqUser, res: Response) {
     try {
       const { orderId } = req.params;
+      const userId = req.user?.id;
       const order = await OrderModel.findOne({
         orderId,
+        createdBy: userId,
       });
       if (!order) return response.notFound(res, "Order Not Found!");
       if (order.status === OrderStatus.COMPLETED)
@@ -280,6 +281,7 @@ export default {
       const result = await OrderModel.findOneAndUpdate(
         {
           orderId: orderId,
+          createdBy: userId,
         },
         {
           $set: {
