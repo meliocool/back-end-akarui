@@ -223,10 +223,8 @@ export default {
   async pending(req: IReqUser, res: Response) {
     try {
       const { orderId } = req.params;
-      const userId = req.user?.id;
       const order = await OrderModel.findOne({
         orderId,
-        createdBy: userId,
       });
       if (!order) return response.notFound(res, "Order Not Found!");
       if (order.status === OrderStatus.PENDING)
@@ -243,7 +241,6 @@ export default {
       const result = await OrderModel.findOneAndUpdate(
         {
           orderId: orderId,
-          createdBy: userId,
         },
         {
           $set: {
@@ -263,10 +260,8 @@ export default {
   async cancelled(req: IReqUser, res: Response) {
     try {
       const { orderId } = req.params;
-      const userId = req.user?.id;
       const order = await OrderModel.findOne({
         orderId,
-        createdBy: userId,
       });
       if (!order) return response.notFound(res, "Order Not Found!");
       if (order.status === OrderStatus.COMPLETED)
@@ -281,7 +276,6 @@ export default {
       const result = await OrderModel.findOneAndUpdate(
         {
           orderId: orderId,
-          createdBy: userId,
         },
         {
           $set: {
